@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeTrack - Infra Cost Calculator</title>
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div></div>
+    <form action="/calculate" method="POST" onsubmit="return generateForecast()" id="forecastForm">
+        Daily Number of Studies <input type="number" name="studyCount" placeholder="1" required>
+        Start Month<select name="month" id="" required>
+            <option value="1">Jan</option>
+            <option value="2">Feb</option>
+            <option value="3">Mar</option>
+            <option value="4">Apr</option>
+            <option value="5">May</option>
+            <option value="6">Jun</option>
+            <option value="7">Jul</option>
+            <option value="8">Aug</option>
+            <option value="9">Sep</option>
+            <option value="10">Oct</option>
+            <option value="11">Nov</option>
+            <option value="12">Dec</option>
+        </select>
+        Start Year<select name="year" id="" required>
+            <option>2020</option>
+            <option>2021</option>
+            <option>2022</option>
+        </select>
+        Study Growth in Percentage<input type="number" name="percentage" step="0.01" placeholder="0.00" required>
+        Number of months to forecast<input type="number" name="forecastMonthCount" step="1" placeholder="1" required min="1">
+        <button type="submit">Generate Forecast Report</button>
+    </form>
+    <div id="result" class="hide">
+        <table id="forecast-report">
+            <thead>
+                <th>Month Year</th>
+                <th>Number studies</th>
+                <th>Cost Forecasted</th>
+            </thead>
+            <tbody id="result-body">
+
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<script type="application/javascript">
+
+async function postData(url = '', data = {}) {
+  const response = await fetch(url, {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'default',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+      
+    },
+    body: new URLSearchParams(data).toString() 
+  });
+
+  return response.json(); 
+}
+
+function generateForecast(){
+    var formData = new FormData(document.querySelector('#forecastForm'));
+    var result = document.querySelector('#result-body');
+    var object = {};
+
+    formData.forEach((value, key) => object[key] = value);
+
+    postData('/calculate', object)
+        .then(data => {
+            console.log(data);
+            resultText = '';
+
+            data['data'].forEach((item) => {
+
+                let month = item.date;
+                let totalStudy = item.formattedNumbers.numberStudies;
+                let totalCost = item.formattedNumbers.totalCost;
+
+                resultText += `
+                <tr>
+                    <td>${month}</td>
+                    <td>${totalStudy}</td>
+                    <td>${totalCost}</td>
+                </tr>
+                `;
+            });
+
+            result.innerHTML = resultText;
+            document.querySelector('#result').classList.remove('hide');
+            
+        });
+
+    return false;
+}
+</script>
+</html>

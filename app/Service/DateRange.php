@@ -5,7 +5,15 @@ namespace App\Service;
 use DateTime;
 
 class DateRange implements DateRangeGeneratorInterface
-{
+{    
+    /**
+     * generate a collection of dates
+     *
+     * @param  mixed $startMonth
+     * @param  mixed $startYear
+     * @param  mixed $monthsToGenerate
+     * @return array
+     */
     public function generate(int $startMonth, int $startYear, int $monthsToGenerate = 1): array
     {
         $dates = [];

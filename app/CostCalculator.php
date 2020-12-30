@@ -19,6 +19,16 @@ class CostCalculator
         $this->dateRangeGenerator = $generator;
     }
 
+    /**
+     * compute the ram and storage cost
+     *
+     * @param  mixed $studyCount
+     * @param  mixed $studyIncreasePerMonth
+     * @param  mixed $startMonth
+     * @param  mixed $startYear
+     * @param  mixed $monthsToGenerate
+     * @return array
+     */
     public function compute(
         int $studyCount,
         float $studyIncreasePerMonth,
@@ -26,13 +36,19 @@ class CostCalculator
         int $startYear,
         int $monthsToGenerate
     ): array {
-
         $calculationData = $dates = $this->dateRangeGenerator->generate($startMonth, $startYear, $monthsToGenerate);
         $currentStudyCount = $studyCount;
+        $increaseRate = bcdiv($studyIncreasePerMonth, '100', self::FLOAT_PRECISION);
 
         foreach ($dates as $key => $value) {
             if ($key > 0) {
-                $currentStudyCount += bcmul($currentStudyCount, $studyIncreasePerMonth, self::FLOAT_PRECISION);
+                $currentStudyCount = bcadd(
+                    $currentStudyCount,
+                    bcmul($currentStudyCount, $increaseRate, self::FLOAT_PRECISION),
+                    self::FLOAT_PRECISION
+                );
+            } else {
+                $currentStudyCount = bcmul($currentStudyCount, $value['days'], self::FLOAT_PRECISION);
             }
     
             $ramUsage = bcmul($currentStudyCount, self::RAM_PER_STUDY, self::FLOAT_PRECISION);
@@ -42,7 +58,12 @@ class CostCalculator
             $storageUsage = bcmul($currentStudyCount, self::STORAGE_PER_STUDY, self::FLOAT_PRECISION);
             $storageCost = bcmul($storageUsage, self::STORAGE_COST_PER_MB, self::FLOAT_PRECISION);
             $storageCostPerMonth = bcmul($storageCost, $value['days'], self::FLOAT_PRECISION);
-            $totalCost = bcadd($ramCostPerMonth, $storageCostPerMonth, self::FLOAT_PRECISION);
+            $totalCost = round(bcadd($ramCostPerMonth, $storageCostPerMonth, self::FLOAT_PRECISION), 2);
+
+            $formattedNumbers = [
+                'numberStudies' => number_format(round($currentStudyCount, 2), 2),
+                'totalCost' => '$ ' . number_format(round($totalCost, 2), 2)
+            ];
 
             $calculationData[$key] = array_merge(
                 $calculationData[$key],
@@ -54,7 +75,8 @@ class CostCalculator
                     'storageUsage',
                     'storageCost',
                     'storageCostPerMonth',
-                    'totalCost'
+                    'totalCost',
+                    'formattedNumbers'
                 )
             );
         }

@@ -10,5 +10,6 @@ else
 	docker run --rm \
 	    --mount type=bind,src=$SOURCE_DIR,dst=/var/www/html \
 	    --name $CONTAINER_NAME \
+	    --publish 127.0.0.1:8001:8000 \
 	    -it $CONTAINER_NAME bash;
 fi

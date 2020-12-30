@@ -5,7 +5,7 @@ namespace App\Service;
 use DateTime;
 
 class DateRange implements DateRangeGeneratorInterface
-{    
+{
     /**
      * generate a collection of dates
      *

@@ -7,9 +7,9 @@ use App\Service\DateRangeGeneratorInterface;
 class CostCalculator
 {
     const FLOAT_PRECISION = 10;
-    const RAM_PER_STUDY = 0.5; // 500MB / 1000 studies
-    const RAM_COST_PER_DAY = 0.13272; // 0.00553 USD * 24 hours (assumed that each study takes 24 hours to complete)
-    const STORAGE_PER_STUDY = 10;
+    const RAM_PER_STUDY = '0.5'; // 500MB / 1000 studies
+    const RAM_COST_PER_DAY = '0.13272'; // 0.00553 USD * 24 hours (assumed that each study takes 24 hours to complete)
+    const STORAGE_PER_STUDY = '10';
     const STORAGE_COST_PER_MB = '0.000097656'; // 0.10 USD / 1024 MB
 
     public DateRangeGeneratorInterface $dateRangeGenerator;

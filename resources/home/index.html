@@ -13,7 +13,7 @@
 <body>
     <div></div>
     <form action="/calculate" method="POST" onsubmit="return generateForecast()" id="forecastForm">
-        Daily Number of Studies <input type="number" name="studyCount" placeholder="1" required>
+        Daily Number of Studies <input type="number" name="studyCount" placeholder="1" required><br>
         Start Month<select name="month" id="" required>
             <option value="1">Jan</option>
             <option value="2">Feb</option>
@@ -27,14 +27,14 @@
             <option value="10">Oct</option>
             <option value="11">Nov</option>
             <option value="12">Dec</option>
-        </select>
+        </select><br>
         Start Year<select name="year" id="" required>
             <option>2020</option>
             <option>2021</option>
             <option>2022</option>
-        </select>
-        Study Growth in Percentage<input type="number" name="percentage" step="0.01" placeholder="0.00" required>
-        Number of months to forecast<input type="number" name="forecastMonthCount" step="1" placeholder="1" required min="1">
+        </select><br>
+        Study Growth in Percentage<input type="number" name="percentage" step="0.01" placeholder="0.00" required><br>
+        Number of months to forecast<input type="number" name="forecastMonthCount" step="1" placeholder="1" required min="1"><br>
         <button type="submit">Generate Forecast Report</button>
     </form>
     <div id="result" class="hide">
